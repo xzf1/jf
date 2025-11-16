@@ -1,0 +1,2478 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JF聊天系统</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"     
+    rel="stylesheet"
+    integrity="sha384-0evHe/X+828DZkpAfEBcaAiCkVc7QVmYnEAyRFqlX85AfR8zrR4VnWKvzZ7xzkQB5"
+    crossorigin="anonymous"
+  />
+  <style>
+    /* 基础样式 */
+    body {
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      background-color: #f7f7f7;
+      padding: 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* 浅色主题 */
+    body.theme-light {
+      background-color: #f7f7f7;
+      color: #333;
+    }
+    
+    /* 深色主题 */
+    body.theme-dark {
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .login-container {
+      background-color: #2d2d2d;
+      color: #f0f0f0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    body.theme-dark .login-container h2 {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .form-control {
+      background-color: #3d3d3d;
+      border: 1px solid #555;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .form-control::placeholder {
+      color: #aaa;
+    }
+    
+    body.theme-dark .remember-me label {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .chat-container {
+      background-color: #2d2d2d;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .chat-header {
+      background-color: #3d3d3d;
+      border-bottom: 1px solid #555;
+    }
+    
+    body.theme-dark .chat-title {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .chat-messages {
+      background-color: #252525;
+    }
+    
+    body.theme-dark .other-text {
+      background-color: #3d3d3d;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .username {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .input-container {
+      background-color: #2d2d2d;
+      border-top: 1px solid #555;
+    }
+    
+    body.theme-dark .input-field {
+      background-color: #3d3d3d;
+      border: 1px solid #555;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .input-field::placeholder {
+      color: #aaa;
+    }
+    
+    body.theme-dark .settings-container {
+      background-color: #2d2d2d;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .settings-header {
+      background-color: #3d3d3d;
+      border-bottom: 1px solid #555;
+    }
+    
+    body.theme-dark .settings-title {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .settings-content {
+      background-color: #252525;
+    }
+    
+    body.theme-dark .settings-section {
+      background-color: #3d3d3d;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    body.theme-dark .settings-section h3 {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .settings-item label {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .settings-item input,
+    body.theme-dark .settings-item select {
+      background-color: #4d4d4d;
+      border: 1px solid #555;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .system-message {
+      color: #aaa;
+    }
+    
+    /* 字体大小设置 */
+    body.font-small {
+      font-size: 12px;
+    }
+    
+    body.font-medium {
+      font-size: 14px;
+    }
+    
+    body.font-large {
+      font-size: 16px;
+    }
+    
+    body.font-large .chat-title,
+    body.font-large .settings-title {
+      font-size: 20px;
+    }
+    
+    body.font-large .input-field,
+    body.font-large .send-button,
+    body.font-large .header-button {
+      font-size: 16px;
+    }
+    
+    body.font-small .chat-title,
+    body.font-small .settings-title {
+      font-size: 16px;
+    }
+    
+    body.font-small .input-field,
+    body.font-small .send-button,
+    body.font-small .header-button {
+      font-size: 12px;
+    }
+    
+    .login-container {
+      width: 100%;
+      max-width: 300px;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 15px;
+    }
+    
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 25px;
+        margin: 10px;
+      }
+      .chat-container {
+        border-radius: 0;
+        height: 100%;
+        max-width: 100%;
+      }
+    }
+    
+    .login-form h2 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .form-control {
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      padding: 12px 20px;
+      margin-top: 4px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    
+    .btn.btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    
+    .btn.btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+    
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      max-width: 600px;
+      margin: 0;
+      background-color: #ffffff;
+      border-radius: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .chat-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-button {
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .header-button:hover {
+      background-color: #5a6268;
+    }
+
+    .settings-button {
+      background-color: #17a2b8;
+    }
+
+    .settings-button:hover {
+      background-color: #138496;
+    }
+
+    .upload-button {
+      background-color: #28a745;
+    }
+
+    .upload-button:hover {
+      background-color: #218838;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background-color: #f8f9fa;
+    }
+
+    .chat-message {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .own-text {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-left: auto;
+      max-width: 80%;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .other-text {
+      background-color: #e9ecef;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-right: auto;
+      max-width: 80%;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .username {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      background-color: white;
+      border-top: 1px solid #ddd;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .send-button {
+      flex: 0 0 20%;
+      padding: 10px 5px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      .input-container {
+        gap: 3%;
+      }
+      
+      .input-field {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      
+      .send-button {
+        flex-basis: 25%;
+        padding: 9px 3px;
+      }
+      
+      .header-buttons {
+        gap: 5px;
+      }
+      
+      .header-button {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+    }
+    
+    #reconnectAlert {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #ff9800;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    #reconnectAlert.error {
+      background: #f44336;
+    }
+    
+    .system-message {
+      text-align: center;
+      color: #6c757d;
+      font-size: 12px;
+      margin: 10px 0;
+      font-style: italic;
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .remember-me input {
+      margin-right: 8px;
+    }
+    
+    /* 设置面板样式 */
+    .settings-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      max-width: 600px;
+      margin: 0;
+      background-color: #ffffff;
+      border-radius: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .settings-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .settings-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    
+    .settings-section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .settings-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .settings-item {
+      margin-bottom: 15px;
+    }
+    
+    .settings-item label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .settings-item input[type="text"],
+    .settings-item input[type="password"],
+    .settings-item select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .settings-item .checkbox {
+      display: flex;
+      align-items: center;
+    }
+    
+    .settings-item .checkbox input {
+      margin-right: 8px;
+    }
+    
+    .settings-button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .settings-button-group button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .btn-save {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .btn-save:hover {
+      background-color: #218838;
+    }
+    
+    .btn-cancel {
+      background-color: #6c757d;
+      color: white;
+    }
+    
+    .btn-cancel:hover {
+      background-color: #5a6268;
+    }
+    
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    
+    .btn-logout {
+      background-color: #dc3545;
+      color: white;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    
+    .btn-logout:hover {
+      background-color: #c82333;
+    }
+    
+    /* URL链接样式 */
+    .message-link {
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    
+    .message-link:hover {
+      color: #0056b3;
+      text-decoration: none;
+    }
+    
+    body.theme-dark .message-link {
+      color: #4da6ff;
+    }
+    
+    body.theme-dark .message-link:hover {
+      color: #80c1ff;
+    }
+    
+    /* 视频链接特殊样式 */
+    .video-link {
+      color: #ff6b6b;
+      font-weight: bold;
+    }
+    
+    body.theme-dark .video-link {
+      color: #ff9999;
+    }
+    
+    /* 图片链接特殊样式 */
+    .image-link {
+      color: #28a745;
+      font-weight: bold;
+    }
+    
+    body.theme-dark .image-link {
+      color: #4caf50;
+    }
+    
+    /* 浏览器容器样式 */
+    .browser-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      max-width: 600px;
+      margin: 0;
+      background-color: #ffffff;
+      border-radius: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .browser-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      gap: 10px;
+    }
+    
+    .browser-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      flex: 1;
+      text-align: center;
+    }
+    
+    .browser-controls {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .browser-button {
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .browser-button:hover {
+      background-color: #5a6268;
+    }
+    
+    .browser-content {
+      flex: 1;
+      overflow: auto;
+      background-color: white;
+    }
+    
+    .browser-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    body.theme-dark .browser-container {
+      background-color: #2d2d2d;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .browser-header {
+      background-color: #3d3d3d;
+      border-bottom: 1px solid #555;
+    }
+    
+    body.theme-dark .browser-title {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .browser-content {
+      background-color: #252525;
+    }
+    
+    /* 上传页面样式 */
+    .upload-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      max-width: 600px;
+      margin: 0;
+      background-color: #ffffff;
+      border-radius: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .upload-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .upload-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .upload-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    
+    .upload-section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .upload-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .upload-item {
+      margin-bottom: 15px;
+    }
+    
+    .upload-item label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .file-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .upload-button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .upload-button:hover {
+      background-color: #218838;
+    }
+    
+    .upload-button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+    
+    .progress-container {
+      margin-top: 15px;
+      display: none;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress {
+      height: 100%;
+      background-color: #007bff;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 14px;
+      color: #6c757d;
+    }
+    
+    .file-preview {
+      margin-top: 15px;
+      text-align: center;
+      display: none;
+    }
+    
+    .file-preview img,
+    .file-preview video {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 4px;
+    }
+    
+    body.theme-dark .upload-container {
+      background-color: #2d2d2d;
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .upload-header {
+      background-color: #3d3d3d;
+      border-bottom: 1px solid #555;
+    }
+    
+    body.theme-dark .upload-title {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .upload-content {
+      background-color: #252525;
+    }
+    
+    body.theme-dark .upload-section {
+      background-color: #3d3d3d;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    body.theme-dark .upload-section h3 {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .upload-item label {
+      color: #f0f0f0;
+    }
+    
+    body.theme-dark .file-input {
+      background-color: #4d4d4d;
+      border: 1px solid #555;
+      color: #f0f0f0;
+    }
+    
+    /* 安卓文件选择器优化 */
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .file-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-input-label {
+      display: block;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .file-input-label:hover {
+      background-color: #0056b3;
+    }
+    
+    .file-input-info {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6c757d;
+      text-align: center;
+    }
+    
+    /* MP4播放器样式 */
+    .video-player-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      max-width: 600px;
+      margin: 0;
+      background-color: #000;
+      border-radius: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .video-player-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-bottom: 1px solid #444;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    
+    .video-player-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 70%;
+    }
+    
+    .video-player-controls {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .video-player-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .video-player-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .video-player-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color: #000;
+    }
+    
+    .video-player {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .video-player-controls-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .video-control-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .video-progress-container {
+      flex: 1;
+      height: 5px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .video-progress {
+      height: 100%;
+      background-color: #007bff;
+      border-radius: 2px;
+      width: 0%;
+    }
+    
+    .video-time {
+      color: white;
+      font-size: 12px;
+      min-width: 100px;
+      text-align: center;
+    }
+    
+    .video-volume-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .video-volume-slider {
+      width: 60px;
+      height: 5px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .video-volume-level {
+      height: 100%;
+      background-color: #007bff;
+      border-radius: 2px;
+      width: 100%;
+    }
+
+    /* 图片查看器样式 */
+    .image-viewer-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      max-width: 600px;
+      margin: 0;
+      background-color: #000;
+      border-radius: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .image-viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-bottom: 1px solid #444;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    
+    .image-viewer-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 70%;
+    }
+    
+    .image-viewer-controls {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .image-viewer-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .image-viewer-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .image-viewer-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color: #000;
+      position: relative;
+    }
+    
+    .image-viewer {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s;
+    }
+    
+    .image-viewer-controls-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .image-control-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .image-nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .image-nav-button:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .image-prev-button {
+      left: 10px;
+    }
+    
+    .image-next-button {
+      right: 10px;
+    }
+    
+    .image-counter {
+      color: white;
+      font-size: 14px;
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <!-- 重连提示框 -->
+  <div id="reconnectAlert">
+    正在尝试连接服务器... (<span id="attemptCount">0</span>/5)
+  </div>
+
+  <div class="login-container" id="loginPanel">
+    <h2 style="text-align: center; margin-bottom: 20px;">JF聊天软件</h2>
+    <input type="text" id="username" class="form-control" placeholder="用户名">
+    <input type="password" id="password" class="form-control" placeholder="密码" style="margin-top: 15px;">
+    <div class="remember-me">
+      <input type="checkbox" id="rememberMe" checked>
+      <label for="rememberMe">记住登录状态</label>
+    </div>
+    <button class="btn btn-primary" id="loginBtn" onclick="login()">登录</button>
+  </div>
+
+  <div class="chat-container" id="chatPanel" style="display: none;">
+    <div class="chat-header">
+      <div class="chat-title">JF聊天室 - <span id="currentUsername"></span></div>
+      <div class="header-buttons">
+        <button class="header-button settings-button" onclick="showUpload()">上传</button>
+        <button class="header-button settings-button" onclick="showSettings()">设置</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="messageContainer"></div>
+    <div class="input-container">
+      <input 
+        type="text" 
+        class="input-field" 
+        id="messageInput" 
+        placeholder="输入消息"
+        onkeydown="if(event.key === 'Enter') { sendMessage(); event.preventDefault(); }"
+      >
+      <button class="send-button" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+
+  <!-- 设置面板 -->
+  <div class="settings-container" id="settingsPanel" style="display: none;">
+    <div class="settings-header">
+      <div class="settings-title">设置</div>
+      <div class="header-buttons">
+        <button class="header-button" onclick="hideSettings()">返回</button>
+      </div>
+    </div>
+    <div class="settings-content">
+      <!-- 界面设置 -->
+      <div class="settings-section">
+        <h3>界面设置</h3>
+        <div class="settings-item">
+          <label for="themeSelect">主题</label>
+          <select id="themeSelect">
+            <option value="light">浅色</option>
+            <option value="dark">深色</option>
+            <option value="auto">跟随系统</option>
+          </select>
+        </div>
+        <div class="settings-item">
+          <label for="fontSize">字体大小</label>
+          <select id="fontSize">
+            <option value="small">小</option>
+            <option value="medium" selected>中</option>
+            <option value="large">大</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- 数据管理 -->
+      <div class="settings-section">
+        <h3>数据管理</h3>
+        <div class="settings-item">
+          <p>删除所有本地聊天记录，此操作不可撤销。</p>
+          <button class="btn-danger" onclick="confirmClearChatHistory()">删除所有聊天记录</button>
+        </div>
+      </div>
+      
+      <div class="settings-button-group">
+        <button class="btn-cancel" onclick="hideSettings()">取消</button>
+        <button class="btn-save" onclick="saveSettings()">保存设置</button>
+      </div>
+      
+      <button class="btn-logout" onclick="logout()">退出登录</button>
+    </div>
+  </div>
+
+  <!-- 上传面板 -->
+  <div class="upload-container" id="uploadPanel" style="display: none;">
+    <div class="upload-header">
+      <div class="upload-title">上传文件</div>
+      <div class="header-buttons">
+        <button class="header-button" onclick="hideUpload()">返回</button>
+      </div>
+    </div>
+    <div class="upload-content">
+      <div class="upload-section">
+        <h3>选择文件</h3>
+        <div class="upload-item">
+          <label for="fileInput">选择图片或视频文件</label>
+          <div class="file-input-wrapper">
+            <input type="file" id="fileInput" class="file-input" accept="image/*,video/*" capture="camera">
+            <div class="file-input-label">选择文件</div>
+          </div>
+          <p class="file-input-info">支持格式: JPG, JPEG, PNG, GIF, MP4</p>
+          <p class="file-input-info">提示: 在安卓设备上，您可以选择"文件"、"相机"或"图库"</p>
+        </div>
+        
+        <div class="file-preview" id="filePreview">
+          <!-- 文件预览将在这里显示 -->
+        </div>
+        
+        <div class="progress-container" id="progressContainer">
+          <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+          </div>
+          <div class="progress-text" id="progressText">0%</div>
+        </div>
+        
+        <button class="upload-button" id="uploadBtn" onclick="uploadFile()" disabled>上传文件</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浏览器面板 -->
+  <div class="browser-container" id="browserPanel" style="display: none;">
+    <div class="browser-header">
+      <div class="browser-controls">
+        <button class="browser-button" onclick="browserBack()">后退</button>
+        <button class="browser-button" onclick="browserForward()">前进</button>
+        <button class="browser-button" onclick="browserReload()">刷新</button>
+      </div>
+      <div class="browser-title"></div>
+      <div class="browser-controls">
+        <button class="browser-button" onclick="hideBrowser()">返回聊天</button>
+      </div>
+    </div>
+    <div class="browser-content">
+      <iframe id="browserFrame" class="browser-iframe" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <!-- MP4播放器 -->
+  <div class="video-player-container" id="videoPlayerPanel" style="display: none;">
+    <div class="video-player-header">
+      <div class="video-player-title" id="videoPlayerTitle">视频播放器</div>
+      <div class="video-player-controls">
+        <button class="video-player-button" onclick="hideVideoPlayer()">返回</button>
+      </div>
+    </div>
+    <div class="video-player-content">
+      <video id="videoPlayer" class="video-player" controls>
+        您的浏览器不支持视频播放。
+      </video>
+    </div>
+    <div class="video-player-controls-bar" id="videoControls" style="display: none;">
+      <button class="video-control-button" id="playPauseBtn">▶</button>
+      <div class="video-progress-container" id="progressBarContainer">
+        <div class="video-progress" id="videoProgress"></div>
+      </div>
+      <div class="video-time" id="videoTime">0:00 / 0:00</div>
+      <div class="video-volume-container">
+        <button class="video-control-button" id="volumeBtn">🔊</button>
+        <div class="video-volume-slider" id="volumeSlider">
+          <div class="video-volume-level" id="volumeLevel"></div>
+        </div>
+      </div>
+      <button class="video-control-button" id="fullscreenBtn">⛶</button>
+    </div>
+  </div>
+
+  <!-- 图片查看器 -->
+  <div class="image-viewer-container" id="imageViewerPanel" style="display: none;">
+    <div class="image-viewer-header">
+      <div class="image-viewer-title" id="imageViewerTitle">图片查看器</div>
+      <div class="image-viewer-controls">
+        <button class="image-viewer-button" onclick="hideImageViewer()">返回</button>
+      </div>
+    </div>
+    <div class="image-viewer-content">
+      <img id="imageViewer" class="image-viewer" src="" alt="图片">
+      <button class="image-nav-button image-prev-button" id="prevImageBtn" onclick="prevImage()">❮</button>
+      <button class="image-nav-button image-next-button" id="nextImageBtn" onclick="nextImage()">❯</button>
+      <div class="image-counter" id="imageCounter">1 / 1</div>
+    </div>
+    <div class="image-viewer-controls-bar">
+      <button class="image-control-button" id="zoomInBtn" onclick="zoomIn()">+</button>
+      <button class="image-control-button" id="zoomOutBtn" onclick="zoomOut()">-</button>
+      <button class="image-control-button" id="resetZoomBtn" onclick="resetZoom()">重置</button>
+      <button class="image-control-button" id="rotateBtn" onclick="rotateImage()">↻</button>
+    </div>
+  </div>
+
+<script>
+let ws = null;
+let currentUser = null;
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
+let reconnectTimer = null;
+// 添加一个变量来跟踪最后发送的消息
+let lastSentMessage = { content: null, timestamp: 0 };
+
+// 视频播放器相关变量
+let videoPlayer = null;
+let isVideoPlaying = false;
+let videoProgressInterval = null;
+
+// 图片查看器相关变量
+let currentImageIndex = 0;
+let imageList = [];
+let currentZoom = 1;
+let currentRotation = 0;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// 检测并转换URL为可点击链接
+function detectUrls(text) {
+  // URL正则表达式，匹配http://、https://开头的URL
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  
+  // 将文本分割成URL和非URL部分
+  const parts = text.split(urlRegex);
+  
+  // 如果只有一个部分，说明没有URL
+  if (parts.length === 1) {
+    return escapeHtml(text);
+  }
+  
+  // 构建包含链接的HTML
+  let result = '';
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 0) {
+      // 非URL部分
+      result += escapeHtml(parts[i]);
+    } else {
+      // URL部分，创建链接
+      const url = parts[i];
+      // 检查是否是图片链接
+      if (url.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+        result += `<a href="javascript:void(0)" class="message-link image-link" onclick="openImageViewer('${url}')">图片</a>`;
+      } 
+      // 检查是否是视频链接
+      else if (url.toLowerCase().endsWith('.mp4')) {
+        result += `<a href="javascript:void(0)" class="message-link video-link" onclick="openVideoPlayer('${url}')">视频</a>`;
+      } 
+      // 其他URL
+      else {
+        result += `<a href="javascript:void(0)" class="message-link" onclick="openUrlInBrowser('${url}')">${escapeHtml(url)}</a>`;
+      }
+    }
+  }
+  
+  return result;
+}
+
+// 在浏览器中打开URL
+function openUrlInBrowser(url) {
+  // 确保URL有协议前缀
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url;
+  }
+  
+  // 显示浏览器面板
+  showBrowser();
+  
+  // 导航到URL
+  document.getElementById('browserFrame').src = url;
+}
+
+// 打开图片查看器
+function openImageViewer(imageUrl) {
+  // 确保URL有协议前缀
+  if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+    imageUrl = 'https://' + imageUrl;
+  }
+  
+  // 显示图片查看器
+  showImageViewer();
+  
+  // 设置图片源
+  const imageViewer = document.getElementById('imageViewer');
+  imageViewer.src = imageUrl;
+  
+  // 设置图片标题
+  const imageName = imageUrl.split('/').pop() || '图片';
+  document.getElementById('imageViewerTitle').textContent = imageName;
+  
+  // 重置缩放和旋转
+  resetImageTransform();
+  
+  // 收集当前聊天中的所有图片
+  collectImages();
+  
+  // 设置当前图片索引
+  currentImageIndex = imageList.indexOf(imageUrl);
+  if (currentImageIndex === -1) {
+    currentImageIndex = 0;
+  }
+  
+  // 更新导航按钮和计数器
+  updateImageNavigation();
+}
+
+// 收集聊天中的所有图片
+function collectImages() {
+  imageList = [];
+  const messages = document.querySelectorAll('.chat-message');
+  
+  messages.forEach(message => {
+    const links = message.querySelectorAll('.image-link');
+    links.forEach(link => {
+      // 从onclick属性中提取URL
+      const onclickAttr = link.getAttribute('onclick');
+      if (onclickAttr && onclickAttr.includes("openImageViewer('")) {
+        const url = onclickAttr.match(/openImageViewer\('([^']+)'\)/)[1];
+        if (url && !imageList.includes(url)) {
+          imageList.push(url);
+        }
+      }
+    });
+  });
+}
+
+// 更新图片导航
+function updateImageNavigation() {
+  const prevBtn = document.getElementById('prevImageBtn');
+  const nextBtn = document.getElementById('nextImageBtn');
+  const counter = document.getElementById('imageCounter');
+  
+  // 隐藏/显示导航按钮
+  prevBtn.style.display = imageList.length > 1 ? 'flex' : 'none';
+  nextBtn.style.display = imageList.length > 1 ? 'flex' : 'none';
+  
+  // 更新计数器
+  counter.textContent = `${currentImageIndex + 1} / ${imageList.length}`;
+  counter.style.display = imageList.length > 1 ? 'block' : 'none';
+  
+  // 禁用边界按钮
+  prevBtn.disabled = currentImageIndex === 0;
+  nextBtn.disabled = currentImageIndex === imageList.length - 1;
+}
+
+// 上一张图片
+function prevImage() {
+  if (currentImageIndex > 0) {
+    currentImageIndex--;
+    const imageViewer = document.getElementById('imageViewer');
+    imageViewer.src = imageList[currentImageIndex];
+    
+    // 重置缩放和旋转
+    resetImageTransform();
+    
+    // 更新导航
+    updateImageNavigation();
+  }
+}
+
+// 下一张图片
+function nextImage() {
+  if (currentImageIndex < imageList.length - 1) {
+    currentImageIndex++;
+    const imageViewer = document.getElementById('imageViewer');
+    imageViewer.src = imageList[currentImageIndex];
+    
+    // 重置缩放和旋转
+    resetImageTransform();
+    
+    // 更新导航
+    updateImageNavigation();
+  }
+}
+
+// 重置图片变换
+function resetImageTransform() {
+  currentZoom = 1;
+  currentRotation = 0;
+  const imageViewer = document.getElementById('imageViewer');
+  imageViewer.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
+}
+
+// 放大图片
+function zoomIn() {
+  currentZoom += 0.2;
+  const imageViewer = document.getElementById('imageViewer');
+  imageViewer.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
+}
+
+// 缩小图片
+function zoomOut() {
+  if (currentZoom > 0.4) {
+    currentZoom -= 0.2;
+    const imageViewer = document.getElementById('imageViewer');
+    imageViewer.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
+  }
+}
+
+// 旋转图片
+function rotateImage() {
+  currentRotation += 90;
+  const imageViewer = document.getElementById('imageViewer');
+  imageViewer.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
+}
+
+// 显示图片查看器
+function showImageViewer() {
+  document.getElementById('chatPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('uploadPanel').style.display = 'none';
+  document.getElementById('browserPanel').style.display = 'none';
+  document.getElementById('videoPlayerPanel').style.display = 'none';
+  document.getElementById('imageViewerPanel').style.display = 'flex';
+}
+
+// 隐藏图片查看器
+function hideImageViewer() {
+  document.getElementById('imageViewerPanel').style.display = 'none';
+  document.getElementById('chatPanel').style.display = 'flex';
+}
+
+// 打开视频播放器
+function openVideoPlayer(videoUrl) {
+  // 确保URL有协议前缀
+  if (!videoUrl.startsWith('http://') && !videoUrl.startsWith('https://')) {
+    videoUrl = 'https://' + videoUrl;
+  }
+  
+  // 显示视频播放器
+  showVideoPlayer();
+  
+  // 设置视频源
+  videoPlayer = document.getElementById('videoPlayer');
+  videoPlayer.src = videoUrl;
+  
+  // 设置视频标题
+  const videoName = videoUrl.split('/').pop() || '视频';
+  document.getElementById('videoPlayerTitle').textContent = videoName;
+  
+  // 添加视频事件监听器
+  setupVideoPlayerEvents();
+}
+
+// 设置视频播放器事件
+function setupVideoPlayerEvents() {
+  if (!videoPlayer) return;
+  
+  // 清除之前的定时器
+  if (videoProgressInterval) {
+    clearInterval(videoProgressInterval);
+  }
+  
+  // 添加事件监听器
+  videoPlayer.addEventListener('loadedmetadata', function() {
+    updateVideoTimeDisplay();
+  });
+  
+  videoPlayer.addEventListener('timeupdate', function() {
+    updateVideoProgress();
+    updateVideoTimeDisplay();
+  });
+  
+  videoPlayer.addEventListener('play', function() {
+    isVideoPlaying = true;
+    document.getElementById('playPauseBtn').textContent = '❚❚';
+  });
+  
+  videoPlayer.addEventListener('pause', function() {
+    isVideoPlaying = false;
+    document.getElementById('playPauseBtn').textContent = '▶';
+  });
+  
+  videoPlayer.addEventListener('ended', function() {
+    isVideoPlaying = false;
+    document.getElementById('playPauseBtn').textContent = '▶';
+  });
+  
+  // 设置进度条点击事件
+  document.getElementById('progressBarContainer').addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    videoPlayer.currentTime = percent * videoPlayer.duration;
+  });
+  
+  // 设置音量滑块点击事件
+  document.getElementById('volumeSlider').addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    videoPlayer.volume = percent;
+    updateVolumeDisplay();
+  });
+  
+  // 设置播放/暂停按钮
+  document.getElementById('playPauseBtn').addEventListener('click', function() {
+    if (isVideoPlaying) {
+      videoPlayer.pause();
+    } else {
+      videoPlayer.play();
+    }
+  });
+  
+  // 设置音量按钮
+  document.getElementById('volumeBtn').addEventListener('click', function() {
+    if (videoPlayer.volume > 0) {
+      videoPlayer.volume = 0;
+      this.textContent = '🔇';
+    } else {
+      videoPlayer.volume = 1;
+      this.textContent = '🔊';
+    }
+    updateVolumeDisplay();
+  });
+  
+  // 设置全屏按钮
+  document.getElementById('fullscreenBtn').addEventListener('click', function() {
+    if (videoPlayer.requestFullscreen) {
+      videoPlayer.requestFullscreen();
+    } else if (videoPlayer.mozRequestFullScreen) {
+      videoPlayer.mozRequestFullScreen();
+    } else if (videoPlayer.webkitRequestFullscreen) {
+      videoPlayer.webkitRequestFullscreen();
+    } else if (videoPlayer.msRequestFullscreen) {
+      videoPlayer.msRequestFullscreen();
+    }
+  });
+  
+  // 初始化音量显示
+  updateVolumeDisplay();
+}
+
+// 更新视频进度条
+function updateVideoProgress() {
+  if (!videoPlayer) return;
+  
+  const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+  document.getElementById('videoProgress').style.width = progress + '%';
+}
+
+// 更新视频时间显示
+function updateVideoTimeDisplay() {
+  if (!videoPlayer) return;
+  
+  const currentTime = formatTime(videoPlayer.currentTime);
+  const duration = formatTime(videoPlayer.duration);
+  document.getElementById('videoTime').textContent = `${currentTime} / ${duration}`;
+}
+
+// 更新音量显示
+function updateVolumeDisplay() {
+  if (!videoPlayer) return;
+  
+  const volume = videoPlayer.volume;
+  document.getElementById('volumeLevel').style.width = (volume * 100) + '%';
+  
+  // 更新音量图标
+  const volumeBtn = document.getElementById('volumeBtn');
+  if (volume === 0) {
+    volumeBtn.textContent = '🔇';
+  } else if (volume < 0.5) {
+    volumeBtn.textContent = '🔈';
+  } else {
+    volumeBtn.textContent = '🔊';
+  }
+}
+
+// 格式化时间（秒 -> 分:秒）
+function formatTime(seconds) {
+  if (isNaN(seconds)) return '0:00';
+  
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+// 显示视频播放器
+function showVideoPlayer() {
+  document.getElementById('chatPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('uploadPanel').style.display = 'none';
+  document.getElementById('browserPanel').style.display = 'none';
+  document.getElementById('imageViewerPanel').style.display = 'none';
+  document.getElementById('videoPlayerPanel').style.display = 'flex';
+}
+
+// 隐藏视频播放器
+function hideVideoPlayer() {
+  if (videoPlayer) {
+    videoPlayer.pause();
+    videoPlayer.src = '';
+  }
+  
+  document.getElementById('videoPlayerPanel').style.display = 'none';
+  document.getElementById('chatPanel').style.display = 'flex';
+}
+
+// 显示浏览器面板
+function showBrowser() {
+  document.getElementById('chatPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('uploadPanel').style.display = 'none';
+  document.getElementById('videoPlayerPanel').style.display = 'none';
+  document.getElementById('imageViewerPanel').style.display = 'none';
+  document.getElementById('browserPanel').style.display = 'flex';
+}
+
+// 隐藏浏览器面板
+function hideBrowser() {
+  document.getElementById('browserPanel').style.display = 'none';
+  document.getElementById('chatPanel').style.display = 'flex';
+}
+
+// 浏览器导航功能
+function navigateToUrl() {
+  let url = document.getElementById('browserAddress').value.trim();
+  
+  if (!url) return;
+  
+  // 确保URL有协议前缀
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url;
+  }
+  
+  document.getElementById('browserFrame').src = url;
+}
+
+// 浏览器后退
+function browserBack() {
+  try {
+    document.getElementById('browserFrame').contentWindow.history.back();
+  } catch (e) {
+    console.error('无法后退:', e);
+  }
+}
+
+// 浏览器前进
+function browserForward() {
+  try {
+    document.getElementById('browserFrame').contentWindow.history.forward();
+  } catch (e) {
+    console.error('无法前进:', e);
+  }
+}
+
+// 浏览器刷新
+function browserReload() {
+  document.getElementById('browserFrame').src = document.getElementById('browserFrame').src;
+}
+
+// 显示上传面板
+function showUpload() {
+  document.getElementById('chatPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('browserPanel').style.display = 'none';
+  document.getElementById('videoPlayerPanel').style.display = 'none';
+  document.getElementById('imageViewerPanel').style.display = 'none';
+  document.getElementById('uploadPanel').style.display = 'flex';
+}
+
+// 隐藏上传面板
+function hideUpload() {
+  document.getElementById('uploadPanel').style.display = 'none';
+  document.getElementById('chatPanel').style.display = 'flex';
+}
+
+// 文件预览
+function previewFile() {
+  const fileInput = document.getElementById('fileInput');
+  const filePreview = document.getElementById('filePreview');
+  const uploadBtn = document.getElementById('uploadBtn');
+  
+  if (fileInput.files && fileInput.files[0]) {
+    const file = fileInput.files[0];
+    const fileType = file.type;
+    
+    // 验证文件类型
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4'];
+    if (!allowedTypes.includes(fileType)) {
+      alert('不支持的文件格式。请选择图片(JPG, JPEG, PNG, GIF)或视频(MP4)文件。');
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      uploadBtn.disabled = true;
+      return;
+    }
+    
+    // 验证文件大小 (限制为500MB)
+    const maxSize = 500 * 1024 * 1024; // 500MB
+    if (file.size > maxSize) {
+      alert('文件大小不能超过500MB。');
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      uploadBtn.disabled = true;
+      return;
+    }
+    
+    // 显示预览
+    filePreview.style.display = 'block';
+    
+    if (fileType.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        filePreview.innerHTML = `<img src="${e.target.result}" alt="预览">`;
+      };
+      reader.readAsDataURL(file);
+    } else if (fileType === 'video/mp4') {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        filePreview.innerHTML = `<video controls><source src="${e.target.result}" type="video/mp4">您的浏览器不支持视频预览。</video>`;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    uploadBtn.disabled = false;
+  } else {
+    filePreview.style.display = 'none';
+    uploadBtn.disabled = true;
+  }
+}
+
+// 上传文件
+function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const progressContainer = document.getElementById('progressContainer');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  
+  if (!fileInput.files || !fileInput.files[0]) {
+    alert('请选择要上传的文件');
+    return;
+  }
+  
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  // 显示进度条
+  progressContainer.style.display = 'block';
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = '上传中...';
+  
+  // 创建XMLHttpRequest对象
+  const xhr = new XMLHttpRequest();
+  
+  // 监听上传进度
+  xhr.upload.addEventListener('progress', function(e) {
+    if (e.lengthComputable) {
+      const percentComplete = (e.loaded / e.total) * 100;
+      progressBar.style.width = percentComplete + '%';
+      progressText.textContent = Math.round(percentComplete) + '%';
+    }
+  });
+  
+  // 监听上传完成
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      if (response.success) {
+        // 上传成功，发送文件链接到聊天
+        const fileUrl = `http://127.0.01:8082/${response.filename}`;
+        
+        // 如果WebSocket连接正常，通过WebSocket发送消息
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          const timestamp = new Date().getTime();
+          lastSentMessage = { content: fileUrl, timestamp: timestamp };
+          
+          ws.send(JSON.stringify({
+            type: 'message',
+            content: fileUrl
+          }));
+          
+          // 保存到本地存储
+          saveMessageToLocalStorage(currentUser, fileUrl, timestamp);
+          appendMessage(currentUser, fileUrl, timestamp);
+        } else {
+          // 如果没有WebSocket连接，直接添加到聊天界面
+          const timestamp = new Date().getTime();
+          saveMessageToLocalStorage(currentUser, fileUrl, timestamp);
+          appendMessage(currentUser, fileUrl, timestamp);
+        }
+        
+        // 重置上传表单
+        fileInput.value = '';
+        document.getElementById('filePreview').style.display = 'none';
+        progressContainer.style.display = 'none';
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = '上传文件';
+        
+        // 显示成功消息
+        alert('文件上传成功！');
+        
+        // 返回聊天界面
+        hideUpload();
+      } else {
+        alert('上传失败: ' + response.message);
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = '上传文件';
+      }
+    } else {
+      alert('上传失败，服务器错误: ' + xhr.status);
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = '上传文件';
+    }
+  });
+  
+  // 监听上传错误
+  xhr.addEventListener('error', function() {
+    alert('上传失败，网络错误');
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = '上传文件';
+  });
+  
+  // 发送请求
+  xhr.open('POST', 'http://127.0.0.1:8082/upload');
+  xhr.send(formData);
+}
+
+// 初始化页面
+document.addEventListener('DOMContentLoaded', function() {
+  const savedUser = localStorage.getItem('jfchat_user');
+  const rememberMe = localStorage.getItem('jfchat_remember') !== 'false';
+  
+  // 设置记住登录状态复选框
+  document.getElementById('rememberMe').checked = rememberMe;
+  
+  // 加载设置
+  loadSettings();
+  
+  // 安卓文件选择器优化
+  const fileInput = document.getElementById('fileInput');
+  if (fileInput) {
+    fileInput.addEventListener('change', previewFile);
+    
+    // 添加点击事件，确保在安卓设备上也能正常触发文件选择
+    const fileInputLabel = document.querySelector('.file-input-label');
+    if (fileInputLabel) {
+      fileInputLabel.addEventListener('click', function(e) {
+        // 防止事件冒泡
+        e.stopPropagation();
+      });
+    }
+  }
+  
+  if (savedUser && rememberMe) {
+    try {
+      const { username, password } = JSON.parse(savedUser);
+      document.getElementById('username').value = username;
+      document.getElementById('password').value = password;
+
+      // 延迟自动登录，让用户有机会取消
+      setTimeout(() => {
+        // 检查用户是否已经手动修改了凭据
+        const currentUsername = document.getElementById('username').value;
+        const currentPassword = document.getElementById('password').value;
+        
+        if (currentUsername === username && currentPassword === password) {
+          login();
+        }
+      }, 500);
+    } catch (e) {
+      console.error('解析保存的用户信息失败:', e);
+      clearSavedCredentials();
+    }
+  }
+});
+
+// 登录功能
+function login() {
+  const username = escapeHtml(document.getElementById('username').value.trim());
+  const password = escapeHtml(document.getElementById('password').value.trim());
+  const rememberMe = document.getElementById('rememberMe').checked;
+  const loginBtn = document.getElementById('loginBtn');
+  const originalBtnText = loginBtn.textContent;
+
+  if (!username || !password) {
+    alert('请输入用户名和密码');
+    return;
+  }
+
+  loginBtn.textContent = '登录中...';
+  loginBtn.disabled = true;
+
+  const saveCredentials = () => {
+    if (rememberMe) {
+      localStorage.setItem('jfchat_user', JSON.stringify({ username, password }));
+      localStorage.setItem('jfchat_remember', 'true');
+    } else {
+      clearSavedCredentials();
+    }
+  };
+
+  reconnectAttempts = 0;
+  clearReconnectTimer();
+
+  document.getElementById('reconnectAlert').style.display = 'none';
+
+  if (ws) {
+    ws.close();
+    ws = null;
+  }
+
+  ws = new WebSocket('ws://127.0.0.1:8081');
+  
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      action: 'login',
+      username: username,
+      password: password
+    }));
+  };
+
+  ws.onmessage = (e) => {
+    const data = tryParseJson(e.data);
+    if (data) {
+      if (data.success !== undefined) {
+
+        loginBtn.textContent = originalBtnText;
+        loginBtn.disabled = false;
+        
+        if (data.success) {
+          saveCredentials();
+          currentUser = username;
+          document.getElementById('loginPanel').style.display = 'none';
+          document.getElementById('chatPanel').style.display = 'flex';
+          document.getElementById('currentUsername').textContent = username;
+          document.getElementById('reconnectAlert').style.display = 'none';
+          
+          // 加载本地存储的聊天记录
+          loadLocalMessages();
+        } else {
+          if (!rememberMe) {
+            clearSavedCredentials();
+          }
+          alert(data.message || '登录失败');
+        }
+      } else if (data.type === 'message') {
+        // 检查是否是当前用户发送的消息，如果是则忽略
+        if (data.sender === currentUser && 
+            data.content === lastSentMessage.content &&
+            Math.abs(data.timestamp - lastSentMessage.timestamp) < 1000) {
+          // 这是当前用户刚刚发送的消息，忽略它
+          lastSentMessage = { content: null, timestamp: 0 }; // 重置
+          return;
+        }
+        appendMessage(data.sender, data.content, data.timestamp);
+        // 保存到本地存储
+        saveMessageToLocalStorage(data.sender, data.content, data.timestamp);
+      } else if (data.type === 'offline-messages') {
+        // 只保存离线消息到本地存储，不显示在聊天界面
+        data.messages.sort((a, b) => a.timestamp - b.timestamp);
+        data.messages.forEach(msg => {
+          // 只保存到本地存储，不显示
+          saveMessageToLocalStorage(msg.sender, msg.content, msg.timestamp);
+        });
+        
+        // 添加系统提示消息
+        const systemMsg = document.createElement('div');
+        systemMsg.className = 'system-message';
+        systemMsg.textContent = '已加载离线消息';
+        document.getElementById('messageContainer').appendChild(systemMsg);
+      }
+    }
+  };
+
+  ws.onerror = (e) => {
+    console.error('连接错误:', e);
+    loginBtn.textContent = originalBtnText;
+    loginBtn.disabled = false;
+    
+    if (!rememberMe) {
+      clearSavedCredentials();
+    }
+    handleConnectionError();
+  };
+  
+  ws.onclose = () => {
+    if (currentUser) {
+      handleConnectionError();
+    }
+  };
+}
+
+// 清除保存的凭据
+function clearSavedCredentials() {
+  localStorage.removeItem('jfchat_user');
+  localStorage.removeItem('jfchat_remember');
+}
+
+// 发送消息
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  let message = input.value.trim();
+  
+  if (!message || !ws || ws.readyState !== WebSocket.OPEN) return;
+  
+  message = escapeHtml(message);
+  
+  // 记录最后发送的消息
+  const timestamp = new Date().getTime();
+  lastSentMessage = { content: message, timestamp: timestamp };
+  
+  ws.send(JSON.stringify({
+    type: 'message',
+    content: message
+  }));
+  
+  // 即使没有网络也保存到本地
+  saveMessageToLocalStorage(currentUser, message, timestamp);
+  appendMessage(currentUser, message, timestamp);
+  
+  input.value = '';
+}
+
+// 添加消息到聊天窗口
+function appendMessage(sender, content, timestamp) {
+  const container = document.getElementById('messageContainer');
+  const isSelf = sender === currentUser;
+  
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${isSelf ? 'own-message' : 'other-message'}`;
+  messageDiv.dataset.timestamp = timestamp;
+
+  let htmlContent = '';
+  if (!isSelf) {
+    htmlContent += `<span class="username">${escapeHtml(sender)}</span>`;
+  }
+  htmlContent += `<div class="${isSelf ? 'own-text' : 'other-text'}">`;
+  // 使用detectUrls函数处理内容，将URL转换为可点击链接
+  htmlContent += detectUrls(content);
+  htmlContent += '</div>';
+
+  messageDiv.innerHTML = htmlContent;
+
+  let inserted = false;
+  const messages = container.querySelectorAll('.chat-message');
+  for (let i = 0; i < messages.length; i++) {
+    const msgTimestamp = messages[i].dataset.timestamp || 0;
+    if (timestamp < msgTimestamp) {
+      container.insertBefore(messageDiv, messages[i]);
+      inserted = true;
+      break;
+    }
+  }
+  
+  if (!inserted) {
+    container.appendChild(messageDiv);
+  }
+  
+  container.scrollTop = container.scrollHeight;
+}
+
+// 保存消息到本地存储
+function saveMessageToLocalStorage(sender, content, timestamp) {
+  try {
+    // 获取现有消息
+    const storedMessages = JSON.parse(localStorage.getItem('jfchat_messages') || '[]');
+    
+    // 添加新消息
+    storedMessages.push({
+      sender,
+      content,
+      timestamp
+    });
+    
+    // 保存回本地存储
+    localStorage.setItem('jfchat_messages', JSON.stringify(storedMessages));
+  } catch (e) {
+    console.error('保存消息到本地存储失败:', e);
+  }
+}
+
+// 从本地存储加载消息
+function loadLocalMessages() {
+  try {
+    const storedMessages = JSON.parse(localStorage.getItem('jfchat_messages') || '[]');
+    
+    if (storedMessages.length > 0) {
+      // 添加系统消息提示
+      const systemMsg = document.createElement('div');
+      systemMsg.className = 'system-message';
+      systemMsg.textContent = '已加载本地聊天记录';
+      document.getElementById('messageContainer').appendChild(systemMsg);
+      
+      // 按时间排序
+      storedMessages.sort((a, b) => a.timestamp - b.timestamp);
+      
+      // 显示消息
+      storedMessages.forEach(msg => {
+        appendMessage(msg.sender, msg.content, msg.timestamp);
+      });
+    }
+  } catch (e) {
+    console.error('从本地存储加载消息失败:', e);
+  }
+}
+
+// 显示设置面板
+function showSettings() {
+  document.getElementById('chatPanel').style.display = 'none';
+  document.getElementById('settingsPanel').style.display = 'flex';
+  document.getElementById('uploadPanel').style.display = 'none';
+  document.getElementById('browserPanel').style.display = 'none';
+  document.getElementById('videoPlayerPanel').style.display = 'none';
+  document.getElementById('imageViewerPanel').style.display = 'none';
+}
+
+// 隐藏设置面板
+function hideSettings() {
+  document.getElementById('settingsPanel').style.display = 'none';
+  document.getElementById('chatPanel').style.display = 'flex';
+}
+
+// 加载设置
+function loadSettings() {
+  try {
+    const settings = JSON.parse(localStorage.getItem('jfchat_settings') || '{}');
+    
+    // 界面设置
+    document.getElementById('themeSelect').value = settings.theme || 'light';
+    document.getElementById('fontSize').value = settings.fontSize || 'medium';
+    
+    // 应用设置
+    applyTheme(settings.theme || 'light');
+    applyFontSize(settings.fontSize || 'medium');
+  } catch (e) {
+    console.error('加载设置失败:', e);
+  }
+}
+
+// 保存设置
+function saveSettings() {
+  try {
+    const settings = {
+      // 界面设置
+      theme: document.getElementById('themeSelect').value,
+      fontSize: document.getElementById('fontSize').value
+    };
+    
+    localStorage.setItem('jfchat_settings', JSON.stringify(settings));
+    
+    // 应用设置
+    applyTheme(settings.theme);
+    applyFontSize(settings.fontSize);
+    
+    alert('设置已保存');
+    hideSettings();
+  } catch (e) {
+    console.error('保存设置失败:', e);
+    alert('保存设置失败，请重试');
+  }
+}
+
+// 应用主题
+function applyTheme(theme) {
+  const body = document.body;
+  
+  // 移除现有主题类
+  body.classList.remove('theme-light', 'theme-dark');
+  
+  // 应用新主题
+  if (theme === 'dark') {
+    body.classList.add('theme-dark');
+  } else if (theme === 'light') {
+    body.classList.add('theme-light');
+  } else if (theme === 'auto') {
+    // 跟随系统
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      body.classList.add('theme-dark');
+    } else {
+      body.classList.add('theme-light');
+    }
+  }
+}
+
+// 应用字体大小
+function applyFontSize(fontSize) {
+  const body = document.body;
+  
+  // 移除现有字体大小类
+  body.classList.remove('font-small', 'font-medium', 'font-large');
+  
+  // 应用新字体大小
+  body.classList.add(`font-${fontSize}`);
+}
+
+// 确认清除聊天记录
+function confirmClearChatHistory() {
+  if (confirm('确定要删除所有聊天记录吗？此操作不可撤销！')) {
+    clearChatHistory();
+  }
+}
+
+// 清除聊天记录
+function clearChatHistory() {
+  try {
+    // 清除本地存储的聊天记录
+    localStorage.removeItem('jfchat_messages');
+    
+    // 清除聊天界面
+    document.getElementById('messageContainer').innerHTML = '';
+    
+    // 添加系统提示消息
+    const systemMsg = document.createElement('div');
+    systemMsg.className = 'system-message';
+    systemMsg.textContent = '聊天记录已清空';
+    document.getElementById('messageContainer').appendChild(systemMsg);
+    
+    alert('聊天记录已成功删除');
+  } catch (e) {
+    console.error('清除聊天记录失败:', e);
+    alert('清除聊天记录失败，请重试');
+  }
+}
+
+// 退出登录
+function logout() {
+  if (confirm('确定要退出登录吗？')) {
+    // 关闭WebSocket连接
+    if (ws) {
+      ws.close();
+      ws = null;
+    }
+    
+    // 清除当前用户
+    currentUser = null;
+    
+    // 显示登录面板
+    document.getElementById('settingsPanel').style.display = 'none';
+    document.getElementById('chatPanel').style.display = 'none';
+    document.getElementById('browserPanel').style.display = 'none';
+    document.getElementById('uploadPanel').style.display = 'none';
+    document.getElementById('videoPlayerPanel').style.display = 'none';
+    document.getElementById('imageViewerPanel').style.display = 'none';
+    document.getElementById('loginPanel').style.display = 'block';
+    
+    // 清除聊天消息
+    document.getElementById('messageContainer').innerHTML = '';
+    
+    // 清除保存的凭据
+    clearSavedCredentials();
+  }
+}
+
+function tryParseJson(str) {
+  try { 
+    return JSON.parse(str);
+  } catch (e) {
+    console.error('解析JSON失败:', e, '原始数据:', str);
+    return null;
+  }
+}
+
+function handleConnectionError() {
+  if (reconnectAttempts < maxReconnectAttempts) {
+    reconnectAttempts++;
+    document.getElementById('attemptCount').textContent = reconnectAttempts;
+    document.getElementById('reconnectAlert').style.display = 'block';
+    
+    clearReconnectTimer();
+    reconnectTimer = setTimeout(() => {
+      login();
+    }, 3000);
+  } else {
+    document.getElementById('reconnectAlert').className = 'error';
+    document.getElementById('reconnectAlert').innerHTML = 
+      '连接失败，请<a href="javascript:location.reload()">刷新页面</a>重试';
+  }
+}
+
+function clearReconnectTimer() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+}
+</script>
+</body>
+</html>
