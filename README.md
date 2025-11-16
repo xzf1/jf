@@ -8,7 +8,7 @@ JF聊天室
 
 前端文件是index.html
 
-聊天服务器需要这些仓库：ws
+聊天服务器需要这些库：ws
 
 上传服务器需要这些库：express，multer，path，fs，cors
 
